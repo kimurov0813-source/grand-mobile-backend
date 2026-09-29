@@ -19,8 +19,14 @@ const getProducts = async (req, res) => {
 const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
+        const numericId = Number(id);
+
+        if (isNaN(numericId)) {
+            return res.status(400).json({ success: false, message: 'Некорректный ID товара' });
+        }
+
         const product = await prisma.product.findUnique({
-            where: { id: Number(id) }
+            where: { id: numericId }
         });
 
         if (!product) {
@@ -69,10 +75,16 @@ const createProduct = async (req, res) => {
 const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
+        const numericId = Number(id);
+
+        if (isNaN(numericId)) {
+            return res.status(400).json({ success: false, message: 'Некорректный ID товара' });
+        }
+
         const { title, price, quantity } = req.body;
 
         const updatedProduct = await prisma.product.update({
-            where: { id: Number(id) },
+            where: { id: numericId },
             data: {
                 ...(title && { title }),
                 ...(price !== undefined && { price: Number(price) }),
@@ -95,9 +107,14 @@ const updateProduct = async (req, res) => {
 const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
+        const numericId = Number(id);
+
+        if (isNaN(numericId)) {
+            return res.status(400).json({ success: false, message: 'Некорректный ID товара' });
+        }
 
         await prisma.product.delete({
-            where: { id: Number(id) }
+            where: { id: numericId }
         });
 
         res.json({
