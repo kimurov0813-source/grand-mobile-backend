@@ -14,10 +14,6 @@ app.use(express.json());
 // Маршруты API
 app.use('/api/products', productsRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Бэкенд Grand Mobile работает!');
-});
-
 // Запуск сервера
 app.listen(PORT, () => {
   console.log(`🚀 Сервер Grand Mobile запущен: http://localhost:${PORT}`);
