@@ -2,40 +2,27 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
+const productsRoutes = require('./routes/productsRoutes');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
-// 1. Встроенный тестовый маршрут (без внешних файлов)
-app.get('/api/test', (req, res) => {
-  res.json({
-    status: 'ok',
-    message: 'Тестовый маршрут работает прямо из server.js!'
-  });
+// Главный роут
+app.get('/', (req, res) => {
+  res.json({ success: true, message: 'API Grand Mobile работает!' });
 });
 
-// 2. Подключение роутов товаров
-try {
-  const productsRoutes = require('./routes/productsRoutes');
-  app.use('/api/products', productsRoutes);
-  console.log('✅ Маршруты /api/products успешно подключены');
-} catch (err) {
-  console.error('❌ Ошибка при импорте routes/productsRoutes:', err.message);
-}
+// Маршруты товаров
+app.use('/api/products', productsRoutes);
 
-// 3. Отладочный обработчик 404 (перехватывает все неизвестные пути)
+// Обработка 404
 app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    error: 'Маршрут не найден',
-    requestedUrl: req.originalUrl,
-    method: req.method,
-    hint: 'Проверьте /api/test или /api/products'
-  });
+  res.status(404).json({ success: false, message: 'Маршрут не найден' });
 });
 
 app.listen(PORT, () => {
-  console.log(`🚀 Сервер запущен: http://localhost:${PORT}`);
+  console.log(`🚀 Сервер запущен на порту ${PORT}`);
 });
